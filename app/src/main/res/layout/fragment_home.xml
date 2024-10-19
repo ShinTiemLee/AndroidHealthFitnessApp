@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HomeFragment"
+    tools:ignore="ExtraText">
+
+    <!-- Header or Title -->
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:background="#8EC87E">
+
+        <LinearLayout
+            android:id="@+id/topPanel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            app:layout_constraintBottom_toTopOf="@id/nutritionVideosBtn"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <ImageView
+                android:id="@+id/homeLogo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="TODO"
+                android:src="@drawable/logo"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/homeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="40dp"
+                android:text="Health and Wellness"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/homeLogo"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+        <!-- Videos by Nutrition Experts -->
+
+        <!-- Dietary Guidelines -->
+
+        <!-- Diet Tracker (Mini-EAT Tool) -->
+
+        <Button
+            android:id="@+id/nutritionVideosBtn"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="30dp"
+
+            android:foreground="@drawable/nurition_vid"
+            android:text="Nutrition Videos"
+            app:layout_constraintEnd_toStartOf="@id/dietaryGuidelinesBtn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/topPanel" />
+
+        <Button
+            android:id="@+id/dietaryGuidelinesBtn"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="25dp"
+            android:foreground="@drawable/diet_guide"
+            android:text="Diet Guidelines"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/nutritionVideosBtn"
+            app:layout_constraintTop_toBottomOf="@id/topPanel" />
+
+        <Button
+            android:id="@+id/dietTrackerBtn"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="15dp"
+            android:foreground="@drawable/diet_track"
+            android:text="Diet Tracker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nutritionVideosBtn" />
+
+        <!-- Physical Activity Tracker (Step Tracker) -->
+
+        <!-- Nicotine Exposure Tracker -->
+        <Button
+            android:id="@+id/stepTrackerBtn"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:foreground="@drawable/step_track"
+            android:text="Step Tracker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintStart_toEndOf="@+id/dietTrackerBtn"
+            app:layout_constraintTop_toBottomOf="@+id/dietaryGuidelinesBtn" />
+
+        <Button
+            android:id="@+id/nicotineTrackerBtn"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="15dp"
+            android:foreground="@drawable/nicotine_track"
+            android:text="Nicotine Tracker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dietTrackerBtn" />
+
+        <!-- BMI Tracker -->
+        <Button
+            android:id="@+id/bmiTrackerBtn"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Primary"
+            android:layout_width="150dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="32dp"
+            android:foreground="@drawable/bmi_track"
+            android:text="BMI Tracker"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/nicotineTrackerBtn"
+            app:layout_constraintTop_toBottomOf="@+id/stepTrackerBtn" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
+

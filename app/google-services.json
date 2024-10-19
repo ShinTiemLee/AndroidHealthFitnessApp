@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "498509912846",
+    "project_id": "hfapp-807c6",
+    "storage_bucket": "hfapp-807c6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:498509912846:android:9868ea134719285dfcd55f",
+        "android_client_info": {
+          "package_name": "com.shin.hfapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCnHWXHVUikvU87VnxnJFiPpuBmwD6FGU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

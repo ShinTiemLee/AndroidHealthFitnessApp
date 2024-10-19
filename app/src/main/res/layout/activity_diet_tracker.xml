@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/editTextMealName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Meal Name" />
+
+    <EditText
+        android:id="@+id/editTextCalories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Calories"
+        android:layout_below="@id/editTextMealName"
+        android:inputType="number" />
+
+    <EditText
+        android:id="@+id/editTextProteins"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Proteins (g)"
+        android:layout_below="@id/editTextCalories"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/editTextCarbs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Carbs (g)"
+        android:layout_below="@id/editTextProteins"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/editTextFats"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fats (g)"
+        android:layout_below="@id/editTextCarbs"
+        android:inputType="numberDecimal" />
+
+    <Button
+        android:id="@+id/buttonSaveMeal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Save Meal"
+        android:layout_below="@id/editTextFats"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/buttonViewMeals"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View Meals"
+        android:layout_below="@id/buttonSaveMeal"
+        android:layout_marginTop="8dp" />
+
+</RelativeLayout>
