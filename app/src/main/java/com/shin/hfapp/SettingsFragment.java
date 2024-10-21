@@ -1,5 +1,7 @@
 package com.shin.hfapp;
 
+import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -7,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,6 +64,17 @@ View view;
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         view= inflater.inflate(R.layout.fragment_settings, container, false);
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity()); // Use fragment's activity as context
+
+        // Initialize button
+        Button deleteHistoryBtn = view.findViewById(R.id.DeleteHistoryBtn);
+
+        // Set onClickListener
+        deleteHistoryBtn.setOnClickListener(v -> {
+            SQLiteDatabase db = databaseHelper.getWritableDatabase(); // Get writable database
+            databaseHelper.onDeleteHistory(db); // Call delete function
+            Toast.makeText(getActivity(), "Deleted history", Toast.LENGTH_SHORT).show(); // Use getActivity() as context
+        });
         return view;
     }
 }

@@ -76,6 +76,18 @@ View view;
 
         });
 
+        Button stepTrackerBtn = view.findViewById(R.id.stepTrackerBtn);
+
+        // Set the onClickListener for the logout button
+        stepTrackerBtn.setOnClickListener(v -> {
+            // Access SharedPreferences using the Activity context
+            getActivity();
+
+            Intent intent = new Intent(getActivity(), StepTrackerActivity.class);
+            startActivity(intent);
+
+        });
+
         Button dietTrackerBtn = view.findViewById(R.id.dietTrackerBtn);
 
         // Set the onClickListener for the logout button

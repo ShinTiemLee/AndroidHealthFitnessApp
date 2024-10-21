@@ -87,6 +87,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    public void onDeleteHistory(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEALS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_BMI);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STEPS);
+        onCreate(db);
+    }
+
+
     // Insert Meal Data
     public void insertMeal(String name, int calories, float protein, float carbs, float fats, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -167,10 +175,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DATE, date);
         values.put(COLUMN_STEPS, steps);
 
-        // Check if entry exists for today
-        long id = db.insertWithOnConflict(TABLE_STEPS, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+        // Check if a row exists for the given date
+        int rowsAffected = db.update(TABLE_STEPS, values, COLUMN_DATE + "=?", new String[]{date});
+
+        // If no rows were updated, insert a new row
+        if (rowsAffected == 0) {
+            db.insert(TABLE_STEPS, null, values);
+        }
+
         db.close();
     }
+
 
     // Get steps for a given day
     public int getStepsForDay(String date) {
