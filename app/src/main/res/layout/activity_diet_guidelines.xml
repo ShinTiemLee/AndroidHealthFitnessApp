@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".DietGuidelinesActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:title="Diet Guidelines"
+            android:background="?attr/colorPrimary"
+            android:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Section for diet guidelines -->
+            <TextView
+                android:id="@+id/guidelinesTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Healthy Diet Guidelines"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. Eat a balanced diet rich in vegetables, fruits, and whole grains."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline1_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. Stay hydrated and drink plenty of water throughout the day."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline2_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3. Avoid processed foods and excess sugar."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline3_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4. Include healthy fats in your diet, such as avocados and nuts."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline4_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5. Limit your intake of red meat and opt for lean protein sources."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline5_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6. Eat smaller, more frequent meals to maintain energy levels."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline6_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7. Read food labels to understand nutritional information."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline7_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8. Practice mindful eating to enhance your eating experience."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline8_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9. Include a variety of foods to ensure nutrient diversity."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline9_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/guideline10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10. Consult a healthcare provider for personalized dietary advice."
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/guideline10_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="More info"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

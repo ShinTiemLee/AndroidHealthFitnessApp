@@ -129,6 +129,9 @@ public class StepTrackerActivity extends AppCompatActivity implements SensorEven
 
             previousY = y;
         }
+        List<Step> allSteps = databaseHelper.getAllSteps();
+        ArrayAdapter<Step> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allSteps);
+        listViewAllSteps.setAdapter(adapter);
     }
 
     @Override

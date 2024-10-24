@@ -38,5 +38,8 @@ dependencies {
     implementation("com.google.android.material:material:1.10.0")
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation ("com.github.lecho:hellocharts-library:1.5.8")
+    androidTestImplementation(libs.junit.junit)
+
 
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,19 +8,28 @@
     tools:context=".AccountFragment"
     tools:visibility="visible">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/listViewIntervals"
+            android:layout_width="match_parent"
+            android:layout_height="250dp" />
 
         <Button
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/btnLogout"
-            android:text="LOG OUT"
-            />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <!-- TODO: Update blank fragment layout -->
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout" />
+
+        <lecho.lib.hellocharts.view.LineChartView
+            android:id="@+id/lineChartBMI"
+            android:layout_width="match_parent"
+            android:layout_height="250dp" />
+
+    </LinearLayout>
 
 
 </FrameLayout>

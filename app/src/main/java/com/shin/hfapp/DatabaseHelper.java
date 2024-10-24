@@ -1,12 +1,15 @@
 package com.shin.hfapp;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.shin.hfapp.models.BMIRecord;
 import com.shin.hfapp.models.Meal;
+import com.shin.hfapp.models.NicotineLog;
 import com.shin.hfapp.models.Step;
 
 import java.util.ArrayList;
@@ -14,7 +17,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-      // Table details
+    // Table details
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "fitnessTracker.db";
 
@@ -22,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_MEALS = "meals";
     private static final String TABLE_BMI = "bmi_records";
     private static final String TABLE_STEPS = "steps";
+    private static final String TABLE_NICOTINE = "nicotine_log";
 
     // Meals Table Information
     private static final String COLUMN_MEAL_ID = "id";
@@ -45,6 +49,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_STEPS = "step_count";
     private static final String COLUMN_STEP_DATE = "date";
 
+    //Nicotine table cols
+    public static final String COLUMN_NICOTINE_ID = "id";
+    public static final String COLUMN_NICOTINE_TYPE = "type";
+    public static final String COLUMN_NICOTINE_COUNT = "count";
+    public static final String COLUMN_NICOTINE_DATE = "date";
+    public static final String COLUMN_NOTES = "notes";
+
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -52,6 +64,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Create Meals Table
+        String CREATE_NICOTINE_TABLE = "CREATE TABLE " + TABLE_NICOTINE + "("
+                + COLUMN_NICOTINE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_NICOTINE_TYPE + " TEXT,"
+                + COLUMN_NICOTINE_COUNT + " INTEGER,"
+                + COLUMN_NICOTINE_DATE + " TEXT,"
+                + COLUMN_NOTES + " TEXT" + ")";
+        db.execSQL(CREATE_NICOTINE_TABLE);
+
+
         String CREATE_MEALS_TABLE = "CREATE TABLE " + TABLE_MEALS + "("
                 + COLUMN_MEAL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_MEAL_NAME + " TEXT,"
@@ -84,6 +105,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEALS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BMI);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STEPS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NICOTINE);
         onCreate(db);
     }
 
@@ -91,7 +113,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEALS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_BMI);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_STEPS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NICOTINE);
         onCreate(db);
+    }
+
+    public void insertNicotineLog(String type, int count, String date, String notes) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NICOTINE_TYPE, type);
+        values.put(COLUMN_NICOTINE_COUNT, count);
+        values.put(COLUMN_NICOTINE_DATE, date);
+        values.put(COLUMN_NOTES, notes);
+        db.insert(TABLE_NICOTINE, null, values);
+        db.close();
+    }
+
+    public List<NicotineLog> getNicotineLogsByDate(String date) {
+        List<NicotineLog> logs = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NICOTINE, null, COLUMN_NICOTINE_DATE + "=?", new String[]{date}, null, null, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String type = cursor.getString(cursor.getColumnIndex(COLUMN_NICOTINE_TYPE));
+                @SuppressLint("Range") int count = cursor.getInt(cursor.getColumnIndex(COLUMN_NICOTINE_COUNT));
+                @SuppressLint("Range") String notes = cursor.getString(cursor.getColumnIndex(COLUMN_NOTES));
+                logs.add(new NicotineLog(type, count, date, notes));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return logs;
+    }
+
+    public List<NicotineLog> getAllNicotineLogs() {
+        List<NicotineLog> logs = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(TABLE_NICOTINE, null, null, null, null, null, COLUMN_DATE + " DESC"); // Order by date descending
+
+        if (cursor.moveToFirst()) {
+            do {
+                @SuppressLint("Range") String type = cursor.getString(cursor.getColumnIndex(COLUMN_NICOTINE_TYPE));
+                @SuppressLint("Range") int count = cursor.getInt(cursor.getColumnIndex(COLUMN_NICOTINE_COUNT));
+                @SuppressLint("Range") String date = cursor.getString(cursor.getColumnIndex(COLUMN_NICOTINE_DATE));
+                @SuppressLint("Range") String notes = cursor.getString(cursor.getColumnIndex(COLUMN_NOTES));
+                logs.add(new NicotineLog(type, count, date, notes));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return logs;
     }
 
 
@@ -110,10 +181,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Retrieve all meals for a specific date
+    @SuppressLint("Range")
     public List<Meal> getMealsForDay(String date) {
         List<Meal> meals = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_MEALS, null, COLUMN_DATE + "=?", new String[]{date}, null, null, null);
+        Cursor cursor = db.query(TABLE_MEALS, null, COLUMN_DATE + "=?", new String[]{date}, null, null, COLUMN_DATE + " DESC");
 
         if (cursor.moveToFirst()) {
             do {
@@ -135,8 +207,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // Calculate total intake for a day
+    @SuppressLint("Range")
     public TotalIntake getTotalIntakeForDay(String date) {
-        TotalIntake totalIntake = new TotalIntake(0,0,0,0);
+        TotalIntake totalIntake = new TotalIntake(0, 0, 0, 0);
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT SUM(" + COLUMN_CALORIES + ") AS totalCalories, " +
                 "SUM(" + COLUMN_PROTEIN + ") AS totalProtein, " +
@@ -155,6 +228,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return totalIntake;
     }
 
+
     // Insert BMI Data
     public void insertBMI(double weight, double height, double bmi, String date) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -167,8 +241,57 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    // Get all BMI records as a List
+    public List<BMIRecord> getAllBMIRecords() {
+        List<BMIRecord> bmiList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_BMI + " ORDER BY " + COLUMN_BMI_DATE + " DESC";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                BMIRecord bmiRecord = new BMIRecord();
+                bmiRecord.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BMI_ID)));
+                bmiRecord.setWeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_WEIGHT)));
+                bmiRecord.setHeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_HEIGHT)));
+                bmiRecord.setBmi(cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_BMI)));
+                bmiRecord.setDate(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BMI_DATE)));
+                bmiList.add(bmiRecord);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return bmiList;
+    }
+
+    @SuppressLint("Range")
+    public List<BMIRecord> getBMIRecordsForLastMonths(int months) {
+        List<BMIRecord> bmiList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to get records for the last 'n' months
+        String query = "SELECT * FROM " + TABLE_BMI + " WHERE " + COLUMN_BMI_DATE + " >= date('now', '-" + months + " months') ORDER BY " + COLUMN_BMI_DATE + " ASC";
+        Cursor cursor = db.rawQuery(query, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                BMIRecord bmiRecord = new BMIRecord();
+                bmiRecord.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_BMI_ID)));
+                bmiRecord.setWeight(cursor.getFloat(cursor.getColumnIndex(COLUMN_WEIGHT)));
+                bmiRecord.setHeight(cursor.getFloat(cursor.getColumnIndex(COLUMN_HEIGHT)));
+                bmiRecord.setBmi(cursor.getFloat(cursor.getColumnIndex(COLUMN_BMI)));
+                bmiRecord.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_BMI_DATE)));
+                bmiList.add(bmiRecord);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return bmiList;
+    }
+
+
+
     // Insert step record for a specific day
-    // Insert or update steps for the current day
+// Insert or update steps for the current day
     public void insertOrUpdateSteps(String date, int steps) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -193,7 +316,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.query(TABLE_STEPS, new String[]{COLUMN_STEPS}, COLUMN_DATE + "=?",
                 new String[]{date}, null, null, null);
         if (cursor != null && cursor.moveToFirst()) {
-            int steps = cursor.getInt(cursor.getColumnIndex(COLUMN_STEPS));
+            @SuppressLint("Range") int steps = cursor.getInt(cursor.getColumnIndex(COLUMN_STEPS));
             cursor.close();
             return steps;
         } else {
@@ -207,7 +330,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Query to get all records
-        String selectQuery = "SELECT * FROM " + TABLE_STEPS;
+        String selectQuery = "SELECT * FROM " + TABLE_STEPS + " ORDER BY " + COLUMN_STEP_DATE + " DESC";
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         // Loop through all rows and add to the list
@@ -223,21 +346,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return stepsList;
     }
 
-    // Retrieve Meal Data
-    public Cursor getAllMeals() {
+    // Retrieve all meals for all dates
+    @SuppressLint("Range")
+    public List<Meal> getAllMeals() {
+        List<Meal> meals = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_MEALS, null);
-    }
+        Cursor cursor = db.query(TABLE_MEALS, null, null, null, null, null, COLUMN_DATE + " ASC"); // Order by date
 
-    // Retrieve BMI Data
-    public Cursor getAllBMIRecords() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_BMI, null);
-    }
-
-    // Retrieve Step Data
-    public Cursor getAllStepCounts() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("SELECT * FROM " + TABLE_STEPS, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Meal meal = new Meal();
+                meal.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_MEAL_ID)));
+                meal.setName(cursor.getString(cursor.getColumnIndex(COLUMN_MEAL_NAME)));
+                meal.setCalories(cursor.getInt(cursor.getColumnIndex(COLUMN_CALORIES)));
+                meal.setProtein(cursor.getFloat(cursor.getColumnIndex(COLUMN_PROTEIN)));
+                meal.setCarbs(cursor.getFloat(cursor.getColumnIndex(COLUMN_CARBS)));
+                meal.setFat(cursor.getFloat(cursor.getColumnIndex(COLUMN_FAT)));
+                meal.setDate(cursor.getString(cursor.getColumnIndex(COLUMN_DATE)));
+                meals.add(meal);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        db.close();
+        return meals;
     }
 }
+
+
+

@@ -2,6 +2,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+
     }
     dependencies {
         // Add the Google Services classpath for Firebase
@@ -14,5 +15,6 @@ buildscript {
 }
 allprojects {
     repositories {
+
     }
 }

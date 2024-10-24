@@ -74,7 +74,9 @@ public class Meal {
     @NonNull
     @Override
     public String toString() {
-        return name + " - Calories: " + calories +
-                ", Protein: " + protein + "g, Carbs: " + carbs + "g, Fat: " + fat + "g";
+        return name + ": " + calories + " calories, " +
+                protein + "g protein, " +
+                carbs + "g carbs, " +
+                fat + "g fat";
     }
 }

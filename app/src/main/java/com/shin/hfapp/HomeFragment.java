@@ -100,6 +100,44 @@ View view;
 
         });
 
+        Button nicotineTrackerBtn = view.findViewById(R.id.nicotineTrackerBtn);
+
+        // Set the onClickListener for the logout button
+        nicotineTrackerBtn.setOnClickListener(v -> {
+            // Access SharedPreferences using the Activity context
+            getActivity();
+
+            Intent intent = new Intent(getActivity(), NicotineTrackerActivity.class);
+            startActivity(intent);
+
+        });
+
+
+        Button dietaryGuidelinesBtn = view.findViewById(R.id.dietaryGuidelinesBtn);
+
+        // Set the onClickListener for the logout button
+        dietaryGuidelinesBtn.setOnClickListener(v -> {
+            // Access SharedPreferences using the Activity context
+            getActivity();
+
+            Intent intent = new Intent(getActivity(), DietGuidelinesActivity.class);
+            startActivity(intent);
+
+        });
+
+        Button nutritionVideosBtn = view.findViewById(R.id.nutritionVideosBtn);
+
+        // Set the onClickListener for the logout button
+        nutritionVideosBtn.setOnClickListener(v -> {
+            // Access SharedPreferences using the Activity context
+            getActivity();
+
+            Intent intent = new Intent(getActivity(), NutritionVideosActivity.class);
+            startActivity(intent);
+
+        });
+
+
         return view;
     }
 }

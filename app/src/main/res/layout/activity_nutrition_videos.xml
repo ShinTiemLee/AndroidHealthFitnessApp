@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".NutritionVideosActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:title="Nutrition Videos"
+            android:background="?attr/colorPrimary"
+            android:titleTextColor="@android:color/white" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Section for Nutrition Videos -->
+            <TextView
+                android:id="@+id/videosTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Top Nutrition Videos"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                android:textStyle="bold"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1. The Importance of a Balanced Diet"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video1_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2. How to Eat Healthy on a Budget"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video2_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3. The Truth About Processed Foods"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video3_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4. How to Stay Hydrated: Tips and Tricks"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video4_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5. Understanding Macronutrients: Protein, Carbs, and Fats"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video5_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="6. How to Read Nutrition Labels Effectively"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video6_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="7. The Role of Fiber in a Healthy Diet"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video7_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="8. Vitamins and Minerals: What You Need to Know"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video8_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="9. How to Incorporate Superfoods into Your Diet"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video9_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/video10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10. How to Create a Sustainable Meal Plan"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/video10_link"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Watch Video"
+                android:textColor="@android:color/holo_blue_dark"
+                android:layout_marginBottom="16dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
