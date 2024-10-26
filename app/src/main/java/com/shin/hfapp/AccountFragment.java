@@ -16,6 +16,7 @@ import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Line;
 import lecho.lib.hellocharts.model.LineChartData;
 import lecho.lib.hellocharts.model.PointValue;
@@ -107,9 +108,13 @@ public class AccountFragment extends Fragment {
 
         // Prepare points for the chart based on the aggregated data
         ArrayList<PointValue> points = new ArrayList<>();
+        ArrayList<String> xLabels = new ArrayList<>();  // Store x-axis labels
         int index = 0;
+
         for (Map.Entry<String, Float> entry : bmiMap.entrySet()) {
-            points.add(new PointValue(index++, entry.getValue()));  // x = index, y = highest BMI value
+            points.add(new PointValue(index, entry.getValue()));  // x = index, y = highest BMI value
+            xLabels.add(entry.getKey());  // Add the date to the labels
+            index++;
         }
         Log.d("ChartPoints", "Points: " + points.toString());
 
@@ -129,6 +134,7 @@ public class AccountFragment extends Fragment {
         // Set axis labels
         Axis axisX = new Axis();
         axisX.setName("Date");  // Set X-axis label
+        axisX.setValues(createAxisValues(xLabels));  // Set the X-axis values
         Axis axisY = new Axis();
         axisY.setName("BMI Value");  // Set Y-axis label
         data.setAxisXBottom(axisX);
@@ -138,4 +144,13 @@ public class AccountFragment extends Fragment {
         lineChart.setLineChartData(data);
         lineChart.invalidate();  // Refresh chart
     }
+
+    private List<AxisValue> createAxisValues(List<String> labels) {
+        List<AxisValue> axisValues = new ArrayList<>();
+        for (int i = 0; i < labels.size(); i++) {
+            axisValues.add(new AxisValue(i).setLabel(labels.get(i)));  // Set label for each date
+        }
+        return axisValues;
+    }
+
 }

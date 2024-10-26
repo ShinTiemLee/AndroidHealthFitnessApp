@@ -1,80 +1,103 @@
 package com.shin.hfapp;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import androidx.appcompat.widget.SwitchCompat;
 import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SettingsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.fragment.app.Fragment;
+
+import java.util.Calendar;
+
 public class SettingsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String PREFS_NAME = "waterReminderPrefs";
+    private static final String REMINDER_KEY = "waterReminderEnabled";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private View view;
+    private SwitchCompat switchWaterReminder;
 
     public SettingsFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SettingsFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SettingsFragment newInstance(String param1, String param2) {
-        SettingsFragment fragment = new SettingsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-View view;
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        view= inflater.inflate(R.layout.fragment_settings, container, false);
-        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity()); // Use fragment's activity as context
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_settings, container, false);
 
-        // Initialize button
+        DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
+
+        // Initialize delete history button
         Button deleteHistoryBtn = view.findViewById(R.id.DeleteHistoryBtn);
-
-        // Set onClickListener
         deleteHistoryBtn.setOnClickListener(v -> {
-            SQLiteDatabase db = databaseHelper.getWritableDatabase(); // Get writable database
-            databaseHelper.onDeleteHistory(db); // Call delete function
-            Toast.makeText(getActivity(), "Deleted history", Toast.LENGTH_SHORT).show(); // Use getActivity() as context
+            SQLiteDatabase db = databaseHelper.getWritableDatabase();
+            databaseHelper.onDeleteHistory(db);
+            Toast.makeText(getActivity(), "Deleted history", Toast.LENGTH_SHORT).show();
         });
+
+        // Initialize the water reminder switch
+        switchWaterReminder = view.findViewById(R.id.switchWaterReminder);
+        SharedPreferences prefs = getActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isReminderEnabled = prefs.getBoolean(REMINDER_KEY, false);
+        switchWaterReminder.setChecked(isReminderEnabled);
+
+        switchWaterReminder.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean(REMINDER_KEY, isChecked);
+            editor.apply();
+
+            if (isChecked) {
+                scheduleHourlyReminder();
+            } else {
+                cancelHourlyReminder();
+            }
+        });
+
         return view;
+    }
+
+    private void scheduleHourlyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), WaterReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE // Add this flag to comply with Android 12+ requirements
+        );
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis());
+        calendar.add(Calendar.HOUR, 1);
+
+        alarmManager.setInexactRepeating(
+                AlarmManager.RTC_WAKEUP,
+                calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_HOUR,
+                pendingIntent
+        );
+    }
+
+    private void cancelHourlyReminder() {
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), WaterReminderReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(
+                getContext(),
+                0,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE // Add this flag to comply with Android 12+ requirements
+        );
+
+        alarmManager.cancel(pendingIntent);
     }
 }

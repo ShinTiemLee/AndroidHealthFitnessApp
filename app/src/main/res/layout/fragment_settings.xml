@@ -20,5 +20,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:text="delete history"/>
+    <!-- activity_settings.xml -->
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchWaterReminder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hourly Water Reminder"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/DeleteHistoryBtn" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
