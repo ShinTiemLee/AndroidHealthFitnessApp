@@ -1,38 +1,49 @@
 package com.shin.hfapp;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.shin.hfapp.models.NicotineLog;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 
 public class NicotineTrackerActivity extends AppCompatActivity {
 
-    private static final String TOBACCO_HELPLINE_NUMBER = "1800 112 356"; // Replace with actual helpline number
+    private static final String TOBACCO_HELPLINE_NUMBER = "1800 112 356";
     private static final int CALL_PERMISSION_CODE = 102;
 
     private ListView listView;
     private EditText editTextType, editTextCount, editTextNotes;
-    private DatabaseHelper databaseHelper;
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("nicotine", "Nicotine");
+        Log.d("nicotine", "NicotineTrackerActivity started");
         setContentView(R.layout.activity_nicotine_tracker);
+
+        // Initialize Firestore and Firebase Auth
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         listView = findViewById(R.id.listViewNicotineHistory);
         editTextType = findViewById(R.id.editTextType);
@@ -41,15 +52,13 @@ public class NicotineTrackerActivity extends AppCompatActivity {
         Button buttonAddLog = findViewById(R.id.btnLog);
         Button buttonCallHelpline = findViewById(R.id.buttonCallHelpline);
 
-        databaseHelper = new DatabaseHelper(this);
-
         // Set up button click listener for adding logs
         buttonAddLog.setOnClickListener(v -> insertNicotineLog());
 
         // Set up button click listener for calling helpline
         buttonCallHelpline.setOnClickListener(v -> makeCallToHelpline());
 
-        // Retrieve logs and display them
+        // Retrieve and display logs
         displayNicotineLogs();
     }
 
@@ -65,36 +74,73 @@ public class NicotineTrackerActivity extends AppCompatActivity {
 
         int count = Integer.parseInt(countStr);
         String date = getCurrentDate();
+        String userId = auth.getCurrentUser().getUid();
 
-        NicotineLog log = new NicotineLog(type, count, date, notes);
-        databaseHelper.insertNicotineLog(type, count, date, notes);
-        displayNicotineLogs();
+        // Prepare data for Firestore
+        HashMap<String, Object> nicotineData = new HashMap<>();
+        nicotineData.put("type", type);
+        nicotineData.put("count", count);
+        nicotineData.put("date", date);
+        nicotineData.put("notes", notes);
+        nicotineData.put("userId", userId); // Associate with user ID
+
+        // Save data to Firestore
+        db.collection("nicotineLogs")
+                .add(nicotineData)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(NicotineTrackerActivity.this, "Log saved successfully!", Toast.LENGTH_SHORT).show();
+                    editTextType.setText("");
+                    editTextCount.setText("");
+                    editTextNotes.setText("");
+                    displayNicotineLogs(); // Refresh displayed logs
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(NicotineTrackerActivity.this, "Error saving log: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                );
     }
 
     private void displayNicotineLogs() {
-        List<NicotineLog> logs = databaseHelper.getAllNicotineLogs();
+        String userId = auth.getCurrentUser().getUid();
 
-        if (logs.isEmpty()) {
-            Toast.makeText(this, "No nicotine logs found", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        db.collection("nicotineLogs")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<NicotineLog> logs = new ArrayList<>();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String type = document.getString("type");
+                            int count = document.getLong("count").intValue();
+                            String date = document.getString("date");
+                            String notes = document.getString("notes");
 
-        String[] logEntries = new String[logs.size()];
-        for (int i = 0; i < logs.size(); i++) {
-            NicotineLog log = logs.get(i);
-            logEntries[i] = "Type: " + log.getType() + ", Count: " + log.getCount() +
-                    ", Date: " + log.getDate() + ", Notes: " + log.getNotes();
-        }
+                            logs.add(new NicotineLog(type, count, date, notes));
+                        }
 
-        // Use ArrayAdapter to display the logs in the ListView
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, logEntries);
-        listView.setAdapter(adapter);
+                        if (logs.isEmpty()) {
+                            Toast.makeText(this, "No nicotine logs found", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Display logs in ListView
+                            String[] logEntries = new String[logs.size()];
+                            for (int i = 0; i < logs.size(); i++) {
+                                NicotineLog log = logs.get(i);
+                                logEntries[i] = "Type: " + log.getType() + ", Count: " + log.getCount() +
+                                        ", Date: " + log.getDate() + ", Notes: " + log.getNotes();
+                            }
+
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                                    android.R.layout.simple_list_item_1, logEntries);
+                            listView.setAdapter(adapter);
+                        }
+                    } else {
+                        Toast.makeText(NicotineTrackerActivity.this, "Error loading logs: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private String getCurrentDate() {
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.getDefault());
-        return sdf.format(new java.util.Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        return sdf.format(new Date());
     }
 
     private void makeCallToHelpline() {

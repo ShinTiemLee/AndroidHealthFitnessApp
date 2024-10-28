@@ -4,52 +4,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context=".NutritionVideosActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:title="Nutrition Videos"
-            android:background="?attr/colorPrimary"
-            android:titleTextColor="@android:color/white" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    android:layout_height="match_parent">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
-        android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Section for Nutrition Videos -->
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/logo"
+                android:layout_marginBottom="24dp"/>
+
             <TextView
-                android:id="@+id/videosTitle"
+                android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Top Nutrition Videos"
+                android:text="Healthy Diet Guidelines"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                 android:textStyle="bold"
-                android:layout_marginBottom="16dp" />
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="24dp"/>
 
+            <!-- Section for Nutrition Videos -->
             <TextView
                 android:id="@+id/video1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1. The Importance of a Balanced Diet"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -66,6 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2. How to Eat Healthy on a Budget"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -82,6 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3. The Truth About Processed Foods"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -98,6 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="4. How to Stay Hydrated: Tips and Tricks"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -114,6 +109,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5. Understanding Macronutrients: Protein, Carbs, and Fats"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -130,6 +126,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="6. How to Read Nutrition Labels Effectively"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -146,6 +143,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="7. The Role of Fiber in a Healthy Diet"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -162,6 +160,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="8. Vitamins and Minerals: What You Need to Know"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -178,6 +177,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="9. How to Incorporate Superfoods into Your Diet"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 
@@ -194,6 +194,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="10. How to Create a Sustainable Meal Plan"
+                android:textColor="@android:color/white"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_marginBottom="8dp" />
 

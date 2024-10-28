@@ -24,7 +24,7 @@
             android:hint="Count"
             app:layout_constraintTop_toBottomOf="@id/editTextType"
             app:layout_constraintStart_toStartOf="parent"
-        />
+            />
 
         <EditText
             android:id="@+id/editTextNotes"

@@ -5,24 +5,29 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
-import androidx.activity.EdgeToEdge;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class DietTrackerActivity extends AppCompatActivity {
 
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_diet_tracker);
 
+        // Initialize Firestore and Firebase Auth
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
         // Initialize views
         EditText editTextMealName = findViewById(R.id.editTextMealName);
@@ -32,8 +37,6 @@ public class DietTrackerActivity extends AppCompatActivity {
         EditText editTextCarbs = findViewById(R.id.editTextCarbs);
         Button buttonSaveMeal = findViewById(R.id.buttonSaveMeal);
         Button buttonViewMeals = findViewById(R.id.buttonViewMeals);
-
-        DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
         // Save meal button click
         buttonSaveMeal.setOnClickListener(new View.OnClickListener() {
@@ -48,8 +51,30 @@ public class DietTrackerActivity extends AppCompatActivity {
                 // Get current date
                 String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-                // Insert meal into the database
-                databaseHelper.insertMeal(mealName, calories, proteins, carbs, fats, currentDate);
+                // Create a HashMap to store meal data
+                HashMap<String, Object> mealData = new HashMap<>();
+                mealData.put("mealName", mealName);
+                mealData.put("calories", calories);
+                mealData.put("fats", fats);
+                mealData.put("proteins", proteins);
+                mealData.put("carbs", carbs);
+                mealData.put("date", currentDate);
+                mealData.put("userId", auth.getCurrentUser().getUid()); // Store user ID for data association
+
+                // Insert meal into Firestore
+                db.collection("meals")
+                        .add(mealData)
+                        .addOnSuccessListener(documentReference -> {
+                            Toast.makeText(DietTrackerActivity.this, "Meal saved successfully!", Toast.LENGTH_SHORT).show();
+                            editTextMealName.setText("");
+                            editTextCalories.setText("");
+                            editTextFats.setText("");
+                            editTextProteins.setText("");
+                            editTextCarbs.setText("");
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(DietTrackerActivity.this, "Error saving meal: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        });
             }
         });
 
@@ -62,5 +87,4 @@ public class DietTrackerActivity extends AppCompatActivity {
             }
         });
     }
-
 }

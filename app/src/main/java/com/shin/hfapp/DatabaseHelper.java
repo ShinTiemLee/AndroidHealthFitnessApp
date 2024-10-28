@@ -11,9 +11,12 @@ import com.shin.hfapp.models.BMIRecord;
 import com.shin.hfapp.models.Meal;
 import com.shin.hfapp.models.NicotineLog;
 import com.shin.hfapp.models.Step;
+import com.shin.hfapp.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -22,6 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "fitnessTracker.db";
 
     // Table names
+
     private static final String TABLE_MEALS = "meals";
     private static final String TABLE_BMI = "bmi_records";
     private static final String TABLE_STEPS = "steps";
@@ -370,6 +374,68 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return meals;
     }
+
+
+
+    // (DatabaseHelper.java)
+
+    public void saveUserToFirestore(User user, String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId).set(user);
+    }
+
+    public void saveCurrentUserData(String userId) {
+        List<BMIRecord> bmiRecords = getAllBMIRecords();
+        List<Step> steps = getAllSteps();
+        List<Meal> meals = getAllMeals();
+        List<NicotineLog> nicotineLogs = getAllNicotineLogs();
+
+        User user = new User(bmiRecords, steps, meals, nicotineLogs);
+        saveUserToFirestore(user, userId);
+    }
+
+
+    // Retrieve user data from Firestore and save to SQLite
+    public void retrieveUserFromFirestore(String userId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("users").document(userId).get().addOnSuccessListener(documentSnapshot -> {
+            if (documentSnapshot.exists()) {
+                User user = documentSnapshot.toObject(User.class);
+
+                // Clear existing records before inserting new data
+                clearAllTables();
+
+                // Insert BMI records
+                for (BMIRecord bmi : user.getBmiRecords()) {
+                    insertBMI(bmi.getWeight(), bmi.getHeight(), bmi.getBmi(), bmi.getDate());
+                }
+
+                // Insert steps
+                for (Step step : user.getSteps()) {
+                    insertOrUpdateSteps(step.getDate(), step.getSteps());
+                }
+
+                // Insert meals
+                for (Meal meal : user.getMeals()) {
+                    insertMeal(meal.getName(), meal.getCalories(), meal.getProtein(), meal.getCarbs(), meal.getFat(), meal.getDate());
+                }
+
+                // Insert nicotine logs
+                for (NicotineLog log : user.getNicotineLogs()) {
+                    insertNicotineLog(log.getType(), log.getCount(), log.getDate(), log.getNotes());
+                }
+            }
+        });
+    }
+
+    private void clearAllTables() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLE_MEALS);
+        db.execSQL("DELETE FROM " + TABLE_BMI);
+        db.execSQL("DELETE FROM " + TABLE_STEPS);
+        db.execSQL("DELETE FROM " + TABLE_NICOTINE);
+    }
+
 }
 
 

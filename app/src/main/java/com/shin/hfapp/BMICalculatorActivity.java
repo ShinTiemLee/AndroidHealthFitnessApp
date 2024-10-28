@@ -1,42 +1,43 @@
 package com.shin.hfapp;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.shin.hfapp.models.BMIRecord;
-
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class BMICalculatorActivity extends AppCompatActivity {
 
-    private DatabaseHelper databaseHelper;
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
     private EditText weightInput, heightInput;
     private TextView resultTextView;
-    private ListView bmiListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bmicalculator);
 
+        // Initialize Firestore and Firebase Auth
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+        // Initialize views
         weightInput = findViewById(R.id.weightInput);
         heightInput = findViewById(R.id.heightInput);
         resultTextView = findViewById(R.id.resultTextView);
-        bmiListView = findViewById(R.id.bmiListView);
         Button calculateButton = findViewById(R.id.calculateButton);
 
-        databaseHelper = new DatabaseHelper(this);
-
-        // Calculate BMI when button is clicked
+        // Calculate BMI and save to Firestore
         calculateButton.setOnClickListener(v -> {
             String weightStr = weightInput.getText().toString();
             String heightStr = heightInput.getText().toString();
@@ -47,21 +48,15 @@ public class BMICalculatorActivity extends AppCompatActivity {
                 float bmi = calculateBMI(weight, height);
                 String date = getCurrentDate();
 
-                // Insert the BMI record into the database
-                databaseHelper.insertBMI(weight, height, bmi, date);
-
+                // Display BMI result
                 resultTextView.setText(String.format("Your BMI is: %.2f", bmi));
-                Toast.makeText(BMICalculatorActivity.this, "BMI recorded", Toast.LENGTH_SHORT).show();
 
-                // Update the list of BMI records
-                loadBMIRecords();
+                // Store BMI data in Firestore
+                saveBMIToFirestore(weight, height, bmi, date);
             } else {
                 Toast.makeText(BMICalculatorActivity.this, "Please enter both weight and height", Toast.LENGTH_SHORT).show();
             }
         });
-
-        // Load the BMI records when the app is started
-        loadBMIRecords();
     }
 
     // Calculate BMI (BMI = weight in kg / height in meters squared)
@@ -74,10 +69,28 @@ public class BMICalculatorActivity extends AppCompatActivity {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 
-    // Load all BMI records and display them in a ListView using ArrayAdapter
-    private void loadBMIRecords() {
-        List<BMIRecord> allBmiRecords = databaseHelper.getAllBMIRecords();
-        ArrayAdapter<BMIRecord> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, allBmiRecords);
-        bmiListView.setAdapter(adapter);
+    // Save BMI record to Firestore
+    private void saveBMIToFirestore(float weight, float height, float bmi, String date) {
+        String userId = auth.getCurrentUser().getUid();  // Get current user's ID
+
+        // Prepare data to be saved
+        HashMap<String, Object> bmiData = new HashMap<>();
+        bmiData.put("weight", weight);
+        bmiData.put("height", height);
+        bmiData.put("bmi", bmi);
+        bmiData.put("date", date);
+        bmiData.put("userId", userId);  // Associate data with the user
+
+        // Save data to Firestore in the "bmiRecords" collection
+        db.collection("bmiRecords")
+                .add(bmiData)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(BMICalculatorActivity.this, "BMI recorded successfully!", Toast.LENGTH_SHORT).show();
+                    weightInput.setText("");
+                    heightInput.setText("");
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(BMICalculatorActivity.this, "Error recording BMI: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

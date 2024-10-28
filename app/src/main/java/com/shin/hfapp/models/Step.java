@@ -4,8 +4,14 @@ public class Step {
     private String date;
     private int steps;
 
-    // Constructor
+    // No-argument constructor
     public Step() {
+    }
+
+    // Parameterized constructor
+    public Step(int steps, String date) {
+        this.steps = steps;
+        this.date = date;
     }
 
     // Getter and setter methods
@@ -31,4 +37,3 @@ public class Step {
         return "Date: " + date + ", Steps: " + steps;
     }
 }
-

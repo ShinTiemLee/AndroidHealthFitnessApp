@@ -15,7 +15,7 @@ public class DietGuidelinesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_diet_guidelines); // Set the content view to your updated layout
 
         // Get references to the TextViews in activity_diet_guidelines.xml
-        TextView guidelinesTitle = findViewById(R.id.guidelinesTitle);
+        TextView guidelinesTitle = findViewById(R.id.title);
         TextView guideline1 = findViewById(R.id.guideline1);
         TextView guideline1Link = findViewById(R.id.guideline1_link);
         TextView guideline2 = findViewById(R.id.guideline2);
