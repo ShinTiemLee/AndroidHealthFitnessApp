@@ -27,16 +27,16 @@ public class NutritionVideosActivity extends AppCompatActivity {
         TextView video10Link = findViewById(R.id.video10_link);
 
         // Set click listeners to open the video URLs in a browser
-        video1Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video1"));
-        video2Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video2"));
-        video3Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video3"));
-        video4Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video4"));
-        video5Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video5"));
-        video6Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video6"));
-        video7Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video7"));
-        video8Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video8"));
-        video9Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video9"));
-        video10Link.setOnClickListener(v -> openUrl("https://www.youtube.com/watch?v=video10"));
+        video1Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video2Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video3Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video4Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video5Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video6Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video7Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video8Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video9Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
+        video10Link.setOnClickListener(v -> openUrl("https://youtu.be/jwWpTAXu-Sg?si=isTVnCdKwSlXLyhX"));
     }
 
     // Method to open URL in a browser
