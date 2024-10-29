@@ -39,13 +39,6 @@ public class SettingsFragment extends Fragment {
 
         DatabaseHelper databaseHelper = new DatabaseHelper(getActivity());
 
-        // Initialize delete history button
-        Button deleteHistoryBtn = view.findViewById(R.id.DeleteHistoryBtn);
-        deleteHistoryBtn.setOnClickListener(v -> {
-            SQLiteDatabase db = databaseHelper.getWritableDatabase();
-            databaseHelper.onDeleteHistory(db);
-            Toast.makeText(getActivity(), "Deleted history", Toast.LENGTH_SHORT).show();
-        });
 
         // Initialize the water reminder switch
         switchWaterReminder = view.findViewById(R.id.switchWaterReminder);

@@ -2,6 +2,7 @@ package com.shin.hfapp;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -51,10 +53,16 @@ public class AccountFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        auth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
         View view = inflater.inflate(R.layout.fragment_account, container, false);
+
+        TextView tvProfile = view.findViewById(R.id.tvProfile);
+        tvProfile.setText("Account ID:"+auth.getCurrentUser().getEmail());
 
         // Initialize chart and Firebase Firestore and Auth
         lineChart = view.findViewById(R.id.lineChartBMI);
+
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
@@ -74,7 +82,7 @@ public class AccountFragment extends Fragment {
 
         // Define time intervals
         String[] intervals = {"3 Months", "6 Months", "9 Months", "12 Months"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_list_item_1, intervals);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.list_item_black_text, intervals);
         listViewIntervals.setAdapter(adapter);
 
         // Set up click listener for ListView
@@ -166,8 +174,10 @@ public class AccountFragment extends Fragment {
         Axis axisX = new Axis();
         axisX.setName("Date");
         axisX.setValues(createAxisValues(xLabels));
+        axisX.setTextColor(Color.BLACK);
         Axis axisY = new Axis();
         axisY.setName("BMI Value");
+        axisY.setTextColor(Color.BLACK);
 
         data.setAxisXBottom(axisX);
         data.setAxisYLeft(axisY);
