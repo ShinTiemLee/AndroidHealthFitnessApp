@@ -7,6 +7,8 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM"/>
     <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <uses-feature
         android:name="android.hardware.sensor.stepcounter"
@@ -26,7 +28,8 @@
         android:theme="@style/Theme.HFapp"
         tools:targetApi="31">
 
-        <receiver android:name=".WaterReminderReceiver" android:exported="false"/>
+        <receiver android:name=".WaterReminderReceiver"/>
+
 
         <activity
             android:name=".DietGuidelinesActivity"

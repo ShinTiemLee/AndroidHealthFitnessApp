@@ -1,18 +1,30 @@
 package com.shin.hfapp.models;
 
 public class BMIRecord {
-    private int id;
+    private String id;
     private float weight;
     private float height;
     private float bmi;
     private String date;
 
+    public BMIRecord() {
+
+    }
+
+    public BMIRecord(String id,float weight, float height, float bmi, String date) {
+        this.id=id;
+        this.weight = weight;
+        this.height = height;
+        this.bmi = bmi;
+        this.date = date;
+    }
+
     // Getters and Setters
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 

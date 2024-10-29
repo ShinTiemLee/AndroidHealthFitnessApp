@@ -53,10 +53,10 @@ public class DietTrackerActivity extends AppCompatActivity {
 
                 // Create a HashMap to store meal data
                 HashMap<String, Object> mealData = new HashMap<>();
-                mealData.put("mealName", mealName);
+                mealData.put("name", mealName);
                 mealData.put("calories", calories);
-                mealData.put("fats", fats);
-                mealData.put("proteins", proteins);
+                mealData.put("fat", fats);
+                mealData.put("protein", proteins);
                 mealData.put("carbs", carbs);
                 mealData.put("date", currentDate);
                 mealData.put("userId", auth.getCurrentUser().getUid()); // Store user ID for data association

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 
 import java.util.Calendar;
+import java.util.Objects;
 
 public class SettingsFragment extends Fragment {
 
@@ -58,35 +60,38 @@ public class SettingsFragment extends Fragment {
 
             if (isChecked) {
                 scheduleHourlyReminder();
+                Log.d("waterReminderOn", "onCreateView: ");
             } else {
                 cancelHourlyReminder();
+                Log.d("waterReminderOff", "onCreateView: ");
             }
         });
 
         return view;
     }
-
     private void scheduleHourlyReminder() {
-        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = (AlarmManager) requireActivity().getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(getActivity(), WaterReminderReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(
                 getContext(),
                 0,
                 intent,
-                PendingIntent.FLAG_IMMUTABLE // Add this flag to comply with Android 12+ requirements
+                PendingIntent.FLAG_IMMUTABLE
         );
 
+        // Set the alarm to start now and repeat every 10 seconds for testing
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.HOUR, 1);
 
-        alarmManager.setInexactRepeating(
+        alarmManager.setRepeating(
                 AlarmManager.RTC_WAKEUP,
                 calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_HOUR,
+                10 * 1000, // 10 seconds for testing
                 pendingIntent
         );
     }
+
+
 
     private void cancelHourlyReminder() {
         AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);

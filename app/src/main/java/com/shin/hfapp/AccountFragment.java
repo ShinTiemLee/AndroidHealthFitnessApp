@@ -1,5 +1,4 @@
 package com.shin.hfapp;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,32 +8,41 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.fragment.app.Fragment;
 
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Line;
-import lecho.lib.hellocharts.model.LineChartData;
-import lecho.lib.hellocharts.model.PointValue;
-import lecho.lib.hellocharts.view.LineChartView;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.ValueShape;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.shin.hfapp.models.BMIRecord;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
+import lecho.lib.hellocharts.model.Line;
+import lecho.lib.hellocharts.model.LineChartData;
+import lecho.lib.hellocharts.model.PointValue;
+import lecho.lib.hellocharts.model.ValueShape;
+import lecho.lib.hellocharts.view.LineChartView;
+
 public class AccountFragment extends Fragment {
 
     private LineChartView lineChart;
-    private DatabaseHelper databaseHelper;
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
 
+    private List<BMIRecord> bmiRecords = new ArrayList<>();
     public AccountFragment() {
         // Required empty public constructor
     }
@@ -45,22 +53,21 @@ public class AccountFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
-        // Initialize chart and list view
+        // Initialize chart and Firebase Firestore and Auth
         lineChart = view.findViewById(R.id.lineChartBMI);
-        ListView listViewIntervals = view.findViewById(R.id.listViewIntervals);
-        databaseHelper = new DatabaseHelper(requireContext());
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
 
+        // Other UI initializations
+        ListView listViewIntervals = view.findViewById(R.id.listViewIntervals);
         Button btnLogout = view.findViewById(R.id.btnLogout);
 
         // Set up the logout button
         btnLogout.setOnClickListener(v -> {
-            // Clear login session
             SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isLoggedIn", false);
             editor.apply();
-
-            // Redirect to login screen
             startActivity(new Intent(getActivity(), LoginActivity.class));
             requireActivity().finish();
         });
@@ -74,83 +81,121 @@ public class AccountFragment extends Fragment {
         listViewIntervals.setOnItemClickListener((parent, view1, position, id) -> {
             int months;
             switch (position) {
-                case 0: months = 3; break;
+
                 case 1: months = 6; break;
                 case 2: months = 9; break;
                 case 3: months = 12; break;
                 default: months = 3;
             }
-            displayBMIData(months);
+            fetchBMIDataFromFirestore(months);
         });
 
         // Default: Display the last 3 months' data initially
-        displayBMIData(3);
+        fetchBMIDataFromFirestore(3);
 
         return view;
     }
 
-    private void displayBMIData(int months) {
-        List<BMIRecord> bmiRecords = databaseHelper.getBMIRecordsForLastMonths(months);
-        Log.d("BMIRecords", "Fetched Records: " + bmiRecords.toString());
+    private void fetchBMIDataFromFirestore(int months) {
+        String userId = auth.getCurrentUser().getUid();
+        Date cutoffDate = getStartDateForMonths(months);
+        bmiRecords = new ArrayList<>();
+        db.collection("bmiRecords").document(userId).collection("userBMIRecords")
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
+                        BMIRecord record = document.toObject(BMIRecord.class);
+                        Date recordDate;
+                        Log.d("1111110", "fetchBMIDataFromFirestore: "+record);
+                        try {
+                            recordDate = new SimpleDateFormat("yyyy-MM-dd").parse(record.getDate());
+                        } catch (ParseException e) {
+                            Log.e("DateParsing", "Invalid date format", e);
+                            continue;
+                        }
 
-        // Use a map to group BMI values by date and keep the highest BMI
+                        // Compare with cutoff date
+                        if (recordDate != null && recordDate.after(cutoffDate)) {
+                            bmiRecords.add(record);
+                            Log.d("111111100", "fetchBMIDataFromFirestore: "+bmiRecords);
+                        }
+                    }
+
+                    // Run on main thread to update UI
+                    requireActivity().runOnUiThread(() -> displayBMIData(bmiRecords));
+                })
+                .addOnFailureListener(e -> Log.e("Firestore", "Error fetching BMI data", e));
+
+    }
+
+
+    // Display and chart the fetched BMI data
+    private void displayBMIData(List<BMIRecord> bmiRecords) {
         HashMap<String, Float> bmiMap = new HashMap<>();
         for (BMIRecord record : bmiRecords) {
-            String dateKey = record.getDate();  // Assuming getDate() returns a String representation of the date
+            String dateKey = record.getDate();
             float currentBmi = record.getBmi();
-
-            // Update the map with the highest BMI value for each date
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 bmiMap.put(dateKey, Math.max(currentBmi, bmiMap.getOrDefault(dateKey, 0f)));
             }
         }
-        Log.d("BMIAggregation", "Aggregated Data: " + bmiMap.toString());
 
-        // Prepare points for the chart based on the aggregated data
         ArrayList<PointValue> points = new ArrayList<>();
-        ArrayList<String> xLabels = new ArrayList<>();  // Store x-axis labels
+        ArrayList<String> xLabels = new ArrayList<>();
         int index = 0;
 
         for (Map.Entry<String, Float> entry : bmiMap.entrySet()) {
-            points.add(new PointValue(index, entry.getValue()));  // x = index, y = highest BMI value
-            xLabels.add(entry.getKey());  // Add the date to the labels
+            points.add(new PointValue(index, entry.getValue()));
+            xLabels.add(entry.getKey());
             index++;
         }
-        Log.d("ChartPoints", "Points: " + points.toString());
 
-        // Create a line for the chart
+        // Create line with increased point size
         Line line = new Line(points).setColor(getResources().getColor(R.color.black))
                 .setCubic(true)
-                .setShape(ValueShape.CIRCLE)
+                .setShape(ValueShape.CIRCLE) // Change shape as needed
                 .setFilled(true)
-                .setHasLabels(true);
+                .setHasLabels(true)
+                .setPointRadius(6); // Increase point size (default is usually 2)
 
-        // Prepare the chart data
         List<Line> lines = new ArrayList<>();
         lines.add(line);
         LineChartData data = new LineChartData();
         data.setLines(lines);
 
-        // Set axis labels
         Axis axisX = new Axis();
-        axisX.setName("Date");  // Set X-axis label
-        axisX.setValues(createAxisValues(xLabels));  // Set the X-axis values
+        axisX.setName("Date");
+        axisX.setValues(createAxisValues(xLabels));
         Axis axisY = new Axis();
-        axisY.setName("BMI Value");  // Set Y-axis label
+        axisY.setName("BMI Value");
+
         data.setAxisXBottom(axisX);
         data.setAxisYLeft(axisY);
 
-        // Set the chart data and refresh
         lineChart.setLineChartData(data);
-        lineChart.invalidate();  // Refresh chart
+        lineChart.invalidate();
     }
+
 
     private List<AxisValue> createAxisValues(List<String> labels) {
         List<AxisValue> axisValues = new ArrayList<>();
         for (int i = 0; i < labels.size(); i++) {
-            axisValues.add(new AxisValue(i).setLabel(labels.get(i)));  // Set label for each date
+            axisValues.add(new AxisValue(i).setLabel(labels.get(i)));
         }
         return axisValues;
+    }
+
+    private Date getStartDateForMonths(int months) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, -months);
+        return calendar.getTime();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        // Clear the bmiRecords to free up memory
+        bmiRecords.clear();
     }
 
 }

@@ -255,7 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 BMIRecord bmiRecord = new BMIRecord();
-                bmiRecord.setId(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_BMI_ID)));
+                bmiRecord.setId(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BMI_ID)));
                 bmiRecord.setWeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_WEIGHT)));
                 bmiRecord.setHeight(cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_HEIGHT)));
                 bmiRecord.setBmi(cursor.getFloat(cursor.getColumnIndexOrThrow(COLUMN_BMI)));
@@ -279,7 +279,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 BMIRecord bmiRecord = new BMIRecord();
-                bmiRecord.setId(cursor.getInt(cursor.getColumnIndex(COLUMN_BMI_ID)));
+                bmiRecord.setId(cursor.getString(cursor.getColumnIndex(COLUMN_BMI_ID)));
                 bmiRecord.setWeight(cursor.getFloat(cursor.getColumnIndex(COLUMN_WEIGHT)));
                 bmiRecord.setHeight(cursor.getFloat(cursor.getColumnIndex(COLUMN_HEIGHT)));
                 bmiRecord.setBmi(cursor.getFloat(cursor.getColumnIndex(COLUMN_BMI)));

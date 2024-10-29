@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.auth.FirebaseAuth;
+import com.shin.hfapp.models.BMIRecord;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -69,22 +70,26 @@ public class BMICalculatorActivity extends AppCompatActivity {
         return new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
     }
 
-    // Save BMI record to Firestore
     private void saveBMIToFirestore(float weight, float height, float bmi, String date) {
-        String userId = auth.getCurrentUser().getUid();  // Get current user's ID
+        String userId = auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : null;
 
-        // Prepare data to be saved
-        HashMap<String, Object> bmiData = new HashMap<>();
-        bmiData.put("weight", weight);
-        bmiData.put("height", height);
-        bmiData.put("bmi", bmi);
-        bmiData.put("date", date);
-        bmiData.put("userId", userId);  // Associate data with the user
+        if (userId == null) {
+            Toast.makeText(BMICalculatorActivity.this, "User not authenticated", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        // Save data to Firestore in the "bmiRecords" collection
-        db.collection("bmiRecords")
-                .add(bmiData)
-                .addOnSuccessListener(documentReference -> {
+        // Generate a unique ID for each BMI record
+        String recordId = db.collection("bmiRecords").document(userId).collection("userBMIRecords").document().getId();
+
+        // Create a BMIRecord object
+        BMIRecord bmiRecord = new BMIRecord(recordId, weight, height, bmi, date);
+
+        // Save the BMI record in the userBMIRecords subcollection
+        db.collection("bmiRecords").document(userId)
+                .collection("userBMIRecords")
+                .document(date)
+                .set(bmiRecord)
+                .addOnSuccessListener(aVoid -> {
                     Toast.makeText(BMICalculatorActivity.this, "BMI recorded successfully!", Toast.LENGTH_SHORT).show();
                     weightInput.setText("");
                     heightInput.setText("");
@@ -93,4 +98,5 @@ public class BMICalculatorActivity extends AppCompatActivity {
                     Toast.makeText(BMICalculatorActivity.this, "Error recording BMI: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
+
 }
